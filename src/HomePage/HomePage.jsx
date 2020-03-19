@@ -6,23 +6,23 @@ import { userActions } from '../_actions';
 
 class HomePage extends React.Component {
     componentDidMount() {
-        this.props.dispatch(userActions.getAll());
+        this.props.dispatch(userActions.getAllDevices());
     }
 
     render() {
-        const { user, users } = this.props;
+        const { user, devices } = this.props;
         return (
             <div className="col-md-6 col-md-offset-3">
-                <h1>Hi {user.firstName}!</h1>
+                <h1>Hi {user.name}!</h1>
                 <p>You're logged in with React & JWT!!</p>
-                <h3>Users from secure api end point:</h3>
-                {users.loading && <em>Loading users...</em>}
-                {users.error && <span className="text-danger">ERROR: {users.error}</span>}
-                {users.items &&
+                <h3>Devices from secure api end point:</h3>
+                {devices.loading && <em>Loading devices...</em>}
+                {devices.error && <span className="text-danger">ERROR: {devices.error}</span>}
+                {devices.items &&
                     <ul>
-                        {users.items.map((user, index) =>
-                            <li key={user.id}>
-                                {user.firstName + ' ' + user.lastName}
+                        {devices.items.map((device, index) =>
+                            <li key={device.id}>
+                                {device.name + ' ' + device.hostname}
                             </li>
                         )}
                     </ul>
@@ -36,11 +36,11 @@ class HomePage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { users, authentication } = state;
+    const { devices, authentication } = state;
     const { user } = authentication;
     return {
         user,
-        users
+        devices
     };
 }
 

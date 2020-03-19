@@ -17,12 +17,18 @@ module.exports = {
         template: './src/index.html'
     })],
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: true,
+        port: 8080,
+        host: "localhost"
     },
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: 'http://localhost:4000'
+            apiUrl: 'http://localhost:3000'
         })
-    }
+    },
+    output: {
+		path: __dirname + "/build",
+		filename: "bundle.js"
+	}
 }

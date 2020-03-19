@@ -6,7 +6,7 @@ import { history } from '../_helpers';
 export const userActions = {
     login,
     logout,
-    getAll
+    getAllDevices
 };
 
 function login(username, password) {
@@ -36,18 +36,18 @@ function logout() {
     return { type: userConstants.LOGOUT };
 }
 
-function getAll() {
+function getAllDevices() {
     return dispatch => {
         dispatch(request());
 
-        userService.getAll()
+        userService.getAllDevices()
             .then(
-                users => dispatch(success(users)),
+                devices => dispatch(success(devices)),
                 error => dispatch(failure(error))
             );
     };
 
     function request() { return { type: userConstants.GETALL_REQUEST } }
-    function success(users) { return { type: userConstants.GETALL_SUCCESS, users } }
+    function success(devices) { return { type: userConstants.GETALL_SUCCESS, devices } }
     function failure(error) { return { type: userConstants.GETALL_FAILURE, error } }
 }

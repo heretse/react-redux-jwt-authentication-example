@@ -7,6 +7,10 @@
   },
   "license": "MIT",
   "scripts": {
+    "prebuild": "npm run lsbuild:clean",
+    "build": "webpack --config webpack.config.js --color -p --progress --hide-modules --display-optimization-bailout",
+    "build:clean": "rimraf ./build",
+    "lsbuild:clean": "rimraf ./build",
     "start": "webpack-dev-server --open"
   },
   "dependencies": {

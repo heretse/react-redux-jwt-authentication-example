@@ -4,20 +4,25 @@ import { authHeader } from '../_helpers';
 export const userService = {
     login,
     logout,
-    getAll
+    getAllDevices
 };
 
 function login(username, password) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "username": username, "password": password }),
+        mode: 'cors', // no-cors, cors, *same-origin
+        credentials: 'same-origin'
     };
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+    return fetch(`${config.apiUrl}/api/users/login`, requestOptions)
         .then(handleResponse)
         .then(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            // store user details and jwt token i n local storage to keep user logged in between page refreshes
             localStorage.setItem('user', JSON.stringify(user));
 
             return user;
@@ -29,19 +34,24 @@ function logout() {
     localStorage.removeItem('user');
 }
 
-function getAll() {
+function getAllDevices() {
     const requestOptions = {
         method: 'GET',
-        headers: authHeader()
+        headers: authHeader(),
+        mode: 'cors', // no-cors, cors, *same-origin
+        // redirect: 'follow', // manual, *follow, error
+        // referrer: 'no-referrer', // *client, no-referrer
+        // credentials: 'same-origin'
     };
 
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/api/devices`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
+    console.log(response);
     return response.text().then(text => {
         const data = text && JSON.parse(text);
-        if (!response.ok) {
+        if (response.status != 200) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
                 logout();
@@ -50,6 +60,18 @@ function handleResponse(response) {
 
             const error = (data && data.message) || response.statusText;
             return Promise.reject(error);
+        } else {
+
+            // data["token"] = 'fake-jwt-token';
+
+            if (response.headers["Refresh-JWT"]) {
+                data["token"] = response.headers.Refresh-JWT;
+            }
+
+            if (response.headers["refresh-token"]) {
+                data["refresh-token"] = response.headers.refresh-token;
+            }
+            
         }
 
         return data;
